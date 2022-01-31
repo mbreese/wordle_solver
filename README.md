@@ -2,7 +2,7 @@
 
 The Wordle game is available here: https://www.powerlanguage.co.uk/wordle . It is a word game where you guess a 5-letter word. Everyone has the same word each day and you only get 6 guesses. After each guess, the game tells you if you got any of the letters right (by position (green), or if they are somewhere in the answer (yellow)). Knowing your guesses and the hints, the goal is to guess the word in the fewest number of turns.
 
-This is an attempt to solve each problem in an optimal way with the fewest number of guesses while also being able to guess the answer in 6 guesses or fewer. The main idea for this solver is to find the guesses that will be the most informative. This is based on frequency analysis and the composition of known word lists.
+This is an attempt to solve each problem in an optimal way with the fewest number of guesses while still being able to get the answer in 6 guesses or less. The main idea for this solver is to find the guesses that will be the most informative. This is based on frequency analysis and the composition of known word lists.
 
 The main concept is to find letters that best split the possible word lists best. To do this, we look at the frequency that each letter occurs in all of the possible words. The list of possible words is based on a known word list and is pruned to keep only words that are possible (with the known good/green letters and known included/yellow letters). The overall frequency of each letter in all words is calculated. The overall frequency for each letter at each position in the words is also calculated -- this is the primary data that we'll use.
 
