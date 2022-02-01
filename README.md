@@ -86,7 +86,7 @@ You can also see the guesses the solver would have suggested for a given word. F
 
 ## Working example
 
-Here is an example of how the solver (correctly) guess the word "KNOLL".
+Here is an example of how the solver (correctly) guesses the word "KNOLL".
 
     $ ./solver.py auto knoll
     knoll => SAINE,GONCH,BROWN,KNOLL
