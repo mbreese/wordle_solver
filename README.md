@@ -1,8 +1,10 @@
 # Wordle Solver
 
+Eveyone needs to write at least one Wordle solver, right?
+
 The Wordle game is available here: https://www.powerlanguage.co.uk/wordle . It is a word game where you guess a 5-letter word. Everyone has the same word each day and you only get 6 guesses. After each guess, the game tells you if you got any of the letters right (by position (green), or if they are somewhere in the answer (yellow)). Knowing your guesses and the hints, the goal is to guess the word in the fewest number of turns.
 
-This is an attempt to solve each problem in the most optimal way. The main idea for this solver is to find the guesses that will be the most informative. This is based on frequency analysis and the composition of known word lists.
+This is an attempt to solve each problem in an optimal way with the fewest number of guesses while still being able to get the answer in 6 guesses or less. The main idea for this solver is to find the guesses that will be the most informative. This is based on frequency analysis and the composition of known word lists.
 
 The main concept is to find letters that best split the possible word lists best. To do this, we look at the frequency that each letter occurs in all of the possible words. The list of possible words is based on a known word list and is pruned to keep only words that are possible (with the known good/green letters and known included/yellow letters). The overall frequency of each letter in all words is calculated. The overall frequency for each letter at each position in the words is also calculated -- this is the primary data that we'll use.
 
@@ -72,12 +74,55 @@ In this mode, you can also have the solver give you a number of possible guesses
            SAUCE 0.710
            SLICE 0.707
 
+
+
 ## Auto mode
 
 You can also see the guesses the solver would have suggested for a given word. For example:
 
     $ ./solver.py auto CIGAR
     CIGAR => SAINE,TRAIL,CIGAR
+
+
+## Working example
+
+Here is an example of how the solver (correctly) guesses the word "KNOLL".
+
+    $ ./solver.py auto knoll
+    knoll => SAINE,GONCH,BROWN,KNOLL
+
+Okay, but let's try it interactively...
+
+    $ ./solver.py                                       
+    Guess: SAINE 0.778 (2315 words left)
+
+So, we start with "SAINE". This matches one letter (N), but it is in the wrong location (yellow). Just to see what other options we have, I'm going to also add the `--guesses` option to show us 5 possible informative guesses. Because we don't know any of the letters yet, the board is ".....", but the known letter is "N". Our previous guess is "SAINE". But, in just this one step we've gone from 2315 possible words to 39. Somewhat unsaid, but we also know that "S" "A" "I" and "E" aren't in the word.
+
+    $ ./solver.py ..... n saine --guesses 5
+    Guess: GONCH 1.915 (39 words left)
+           CONCH 1.889
+           MONTH 1.817
+           BUNCH 1.803
+           MUNCH 1.803
+           
+I have no idea what GONCH means, but it's the best guess here. When compared to KNOLL, we also get a yellow hit on the "O". We still don't have a known letter position, but we know two letters -- "O" and "N", and we only have 8 words left. And we've also excluded "G", "C", and "H".
+
+    $ ./solver.py ..... on saine gonch --guesses 5
+    Guess: BROWN 1.552 (8 words left)
+           FROWN 1.552
+           BRAWL 1.410
+           BRAWN 1.410
+           BROWS 1.410
+
+If we then guess "BROWN" (or "FROWN", they are equally likely, but BROWN wins alphabetically), then we still don't add any new letters, but we now know where the "O" is and we've excluded "B", "R", and "W".
+
+At this stage, we only have the known board of "..O..", known good letters of "O" and "N", and excluded the letters "SAIEGCHBRW"
+
+    $ ./solver.py ..o.. on saine gonch brown --guesses 5
+    Possible words: KNOLL
+    Guess: KNOLL 1.000 (1 word(s) left)
+
+This has apparently excluded all other options, leaving the only possible guess (the correct one): KNOLL.
 
 ## Benchmark mode
 
