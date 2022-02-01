@@ -233,7 +233,8 @@ class TestWord(object):
                 sys.exit(1)
             elif (good_words.size()) <= 2:
                 # if there is one or two valid words, then take the first.
-                guess = good_words.words.pop()
+                guess = sorted(good_words.words)[0]
+                score = 1/good_words.size()
             else:
                 score, guess = good_words.find_best(valid_words.words)[0]
                 
@@ -277,12 +278,15 @@ if __name__ == '__main__':
     all_good_letters = None
     all_guesses = []
     hard_mode = False
+    verbose = False
     show_guesses = 1
 
 
     for arg in sys.argv[1:]:
         if arg in ['--help', '-h', 'help']:
             help()
+        elif arg == '-v':
+            verbose = True
         elif arg == '--hard':
             hard_mode = True
         elif arg in ['--good', '--valid', '--guesses']:
@@ -326,7 +330,7 @@ if __name__ == '__main__':
                 allwords.append(line.strip().upper())
         
         for i,word in enumerate(allwords):
-            if i % 10 == 0:
+            if verbose and i % 10 == 0:
                 print("%s/%s" % (i, len(allwords)))
 
             guesses = TestWord(word).solve(good_fname, valid_fname, hard_mode)
@@ -367,7 +371,7 @@ if __name__ == '__main__':
             print("Possible words: %s" % ','.join(sorted(good_words.words)))
 
         if good_words.size() <= 2:
-            for i, guess in enumerate(good_words.words):
+            for i, guess in enumerate(sorted(good_words.words)):
                 if i == 0:
                     print("Guess: %s %.3f (%s word(s) left)" % (guess, 1/good_words.size(), good_words.size()))
                 else:
